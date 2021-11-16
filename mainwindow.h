@@ -17,7 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void showNetworkCard();
-
+    int capture();
 private slots:
     void on_comboBox_currentIndexChanged(int index);
 
