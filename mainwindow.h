@@ -16,8 +16,16 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void showNetworkCard();
+
+private slots:
+    void on_comboBox_currentIndexChanged(int index);
 
 private:
     Ui::MainWindow *ui;
+    pcap_if_t *all_devices; //指向所有设备
+    pcap_if_t *device;  //指向当前设备
+    pcap_t *pointer; //打开设备的描述符
+    char errbuf[PCAP_ERRBUF_SIZE];  //存放错误信息
 };
 #endif // MAINWINDOW_H

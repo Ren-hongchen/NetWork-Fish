@@ -29,6 +29,9 @@
            <height>0</height>
           </size>
          </property>
+         <property name="contextMenuPolicy">
+          <enum>Qt::DefaultContextMenu</enum>
+         </property>
         </widget>
        </item>
        <item>
@@ -82,9 +85,53 @@
      <height>26</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuproject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuRun">
+    <property name="title">
+     <string>Run</string>
+    </property>
+    <addaction name="actionRun"/>
+    <addaction name="actionStop"/>
+    <addaction name="action_Clear"/>
+   </widget>
+   <addaction name="menuproject"/>
+   <addaction name="menuRun"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionRun">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/start.png</normaloff>:/start.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/stop.png</normaloff>:/stop.png</iconset>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="action_Clear">
+   <property name="icon">
+    <iconset resource="src.qrc">
+     <normaloff>:/empty.png</normaloff>:/empty.png</iconset>
+   </property>
+   <property name="text">
+    <string> Clear</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="src.qrc"/>
+ </resources>
  <connections/>
 </ui>
