@@ -2,6 +2,7 @@
 #define MULTHREAD_H
 #include <QThread>
 #include "pcap.h"
+#include "datapackage.h"
 
 class multhread : public QThread
 {
@@ -12,6 +13,10 @@ public:
     void setFlag();
     void resetFlag();
     void run() override;
+    int ethernetPackageHandle(const u_char *pkt_content,QString &info);
+
+signals:
+    void send(DataPackage data);
 private:
     pcap_t *pointer;
     struct pcap_pkthdr *header;

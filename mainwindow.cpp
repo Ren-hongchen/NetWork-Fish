@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QString>
 #include "multhread.h"
+#include <QDebug>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -38,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
             pointer = nullptr;
         }
     });
+
+    connect(thread,&multhread::send, this,&MainWindow::HandleMessage);
 }
 
 MainWindow::~MainWindow()
@@ -94,3 +97,6 @@ int MainWindow::capture() {
     return 0;
 }
 
+void MainWindow::HandleMessage(DataPackage data){
+    qDebug() << data.getTimeStmp() << " " << data.getInfo();
+}

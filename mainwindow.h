@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "pcap.h"
 #include "winsock2.h"
+#include "datapackage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,6 +21,9 @@ public:
     int capture();
 private slots:
     void on_comboBox_currentIndexChanged(int index);
+
+public slots:
+    void HandleMessage(DataPackage data);
 
 private:
     Ui::MainWindow *ui;
