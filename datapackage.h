@@ -22,7 +22,7 @@ public:
 public:
     const u_char *pkt_content;
 protected:
-    static QString byteToString(char *str,int size);
+    static QString byteToString(u_char *str,int size);
 private:
     u_int data_length;
     QString timeStamp;

@@ -14,6 +14,13 @@ public:
     void resetFlag();
     void run() override;
     int ethernetPackageHandle(const u_char *pkt_content,QString &info);
+    int ipPackageHandle(const u_char *pkt_content,int &ipPackage);
+    int tcpPackageHandle(const u_char *pkt_content,QString &info,int ipPackage);
+    int udpPackageHandle(const u_char *pkt_content,QString &info);
+    QString arpPackageHandle(const u_char *pkt_content);
+
+protected:
+    static QString byteToString(u_char *str,int size);
 
 signals:
     void send(DataPackage data);

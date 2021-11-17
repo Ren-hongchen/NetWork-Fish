@@ -55,16 +55,16 @@ QString DataPackage::getTimeStmp(){
     return this->timeStamp;
 }
 
-QString DataPackage::byteToString(char *str, int size){
+QString DataPackage::byteToString(u_char *str, int size){
     QString res = "";
     for(int i=0;i<size;i++) {
         char one = str[i] >> 4;
-        if(one > 0x0A)
+        if(one >= 0x0A)
             one += 0x41-0x0A;
         else one += 0x30;
 
         char two = str[i] & 0xF;
-        if(two > 0x0A)
+        if(two >= 0x0A)
             two += 0x41-0x0A;
         else two += 0x30;
 
