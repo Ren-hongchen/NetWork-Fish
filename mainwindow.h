@@ -5,6 +5,7 @@
 #include "pcap.h"
 #include "winsock2.h"
 #include "datapackage.h"
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,6 +31,8 @@ private:
     pcap_if_t *all_devices; //指向所有设备
     pcap_if_t *device;  //指向当前设备
     pcap_t *pointer; //打开设备的描述符
+    QVector<DataPackage> pData;
+    int countNumber;
     char errbuf[PCAP_ERRBUF_SIZE];  //存放错误信息
 };
 #endif // MAINWINDOW_H

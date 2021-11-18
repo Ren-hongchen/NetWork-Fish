@@ -8,6 +8,34 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    statusBar()->showMessage("welcome to fish");
+    countNumber = 0;
+
+
+    ui->toolBar->addAction(ui->actionRun);
+    ui->toolBar->addAction(ui->actionStop);
+    ui->toolBar->addAction(ui->action_Clear);
+    ui->toolBar->setMovable(false);
+
+
+    ui->tableWidget->verticalHeader()->setDefaultSectionSize(30);
+    ui->tableWidget->setColumnCount(7);
+    QStringList title = {"NO.","Time","Source","Destination","Protocol","Length","Info"};
+    ui->tableWidget->setHorizontalHeaderLabels(title);
+    ui->tableWidget->setColumnWidth(0,50);
+    ui->tableWidget->setColumnWidth(1,150);
+    ui->tableWidget->setColumnWidth(2,200);
+    ui->tableWidget->setColumnWidth(3,200);
+    ui->tableWidget->setColumnWidth(4,150);
+    ui->tableWidget->setColumnWidth(5,150);
+    ui->tableWidget->setColumnWidth(6,1000);
+
+    ui->tableWidget->setShowGrid(false);
+    ui->tableWidget->verticalHeader()->setVisible(false);
+    ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+
+
     showNetworkCard();
     multhread *thread = new multhread;
     static bool run = false;
@@ -15,6 +43,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionRun,&QAction::triggered,this,[=](){
         run = !run;
         if(run) {
+            countNumber = 0;
+            ui->tableWidget->clearContents();
+            ui->tableWidget->setRowCount(0);
+
+            int dataSize = this->pData.size();
+            for(int i = 0;i<dataSize;i++){
+                free((char*)(this->pData[i].pkt_content));
+                this->pData[i].pkt_content = nullptr;
+            }
+            QVector<DataPackage>().swap(pData);
+
             int res = capture();
             if(res != -1 && pointer) {
                 thread->setPointer(pointer);
@@ -23,6 +62,9 @@ MainWindow::MainWindow(QWidget *parent)
                 ui->actionRun->setDisabled(true);
                 ui->actionStop->setDisabled(false);
                 ui->comboBox->setDisabled(true);
+            } else {
+                run = !run;
+                countNumber = 0;
             }
         }
     });
@@ -98,5 +140,32 @@ int MainWindow::capture() {
 }
 
 void MainWindow::HandleMessage(DataPackage data){
-    qDebug() << data.getTimeStmp() << " " << data.getInfo();
+    ui->tableWidget->insertRow(countNumber);
+    this->pData.push_back(data);
+    QString type = data.getPackageType();
+    QColor color;
+    if(type == "TCP")
+        color = QColor(216,191,216);
+    else if(type == "UDP")
+        color = QColor(144,238,144);
+    else if(type == "ARP")
+        color = QColor(238,238,0);
+    else if(type == "DNS")
+        color = QColor(255,255,224);
+    else
+        color = QColor(255,218,185);
+
+    ui->tableWidget->setItem(countNumber,0,new QTableWidgetItem(QString::number(countNumber)));
+    ui->tableWidget->setItem(countNumber,1,new QTableWidgetItem(data.getTimeStmp()));
+    ui->tableWidget->setItem(countNumber,2,new QTableWidgetItem(data.getSource()));
+    ui->tableWidget->setItem(countNumber,3,new QTableWidgetItem(data.getDestination()));
+    ui->tableWidget->setItem(countNumber,4,new QTableWidgetItem(type));
+    ui->tableWidget->setItem(countNumber,5,new QTableWidgetItem(data.getDataLength()));
+    ui->tableWidget->setItem(countNumber,6,new QTableWidgetItem(data.getInfo()));
+
+    for(int i = 0;i < 7; i++){
+        ui->tableWidget->item(countNumber,i)->setBackgroundColor(color);
+    }
+    countNumber++;
+
 }

@@ -17,7 +17,14 @@ public:
     QString getTimeStmp();
     QString getPackageType();
     QString getInfo();
+    QString getSource();
+    QString getDestination();
 
+    QString getDesMacAddr();
+    QString getSrcMacAddr();
+
+    QString getDesIpAddr();
+    QString getSrcIpAddr();
 
 public:
     const u_char *pkt_content;
