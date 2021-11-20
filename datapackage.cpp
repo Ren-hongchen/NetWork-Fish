@@ -80,7 +80,7 @@ QString DataPackage::getDesMacAddr(){
     eth = (ETHER_HEADER*)(pkt_content);
     u_char *addr = eth->ethernet_des_host;
     if(addr){
-        QString res = byteToString(addr,1) + "."
+        QString res = byteToString(addr,1) + ":"
            + byteToString((addr+1),1) + ":"
            + byteToString((addr+2),1) + ":"
            + byteToString((addr+3),1) + ":"
@@ -98,7 +98,7 @@ QString DataPackage::getSrcMacAddr(){
     eth = (ETHER_HEADER*)(pkt_content);
     u_char *addr = eth->ethernet_src_host;
     if(addr){
-        QString res = byteToString(addr,1) + "."
+        QString res = byteToString(addr,1) + ":"
            + byteToString((addr+1),1) + ":"
            + byteToString((addr+2),1) + ":"
            + byteToString((addr+3),1) + ":"
@@ -138,4 +138,19 @@ QString DataPackage::getDestination(){
         return this->getDesMacAddr();
     }
     return this->getDesIpAddr();
+}
+
+QString DataPackage::getMacType(){
+    ETHER_HEADER *eth;
+    eth = (ETHER_HEADER*)(pkt_content);
+    u_short type =eth->type;
+    if(type == 0x0800) return "IPv4(0x0800)";
+    else if(type == 0x806) return "ARP(0x0806)";
+    else return "";
+}
+
+QString DataPackage::getIpVersion(){
+    IP_HEADER *ip;
+    ip = (IP_HEADER*)(pkt_content);
+    return QString::number(ip->version_length >> 4);
 }

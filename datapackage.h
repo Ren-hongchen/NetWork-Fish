@@ -22,9 +22,12 @@ public:
 
     QString getDesMacAddr();
     QString getSrcMacAddr();
+    QString getMacType();
 
     QString getDesIpAddr();
     QString getSrcIpAddr();
+    QString getIpVersion();
+
 
 public:
     const u_char *pkt_content;

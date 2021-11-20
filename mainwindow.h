@@ -23,6 +23,8 @@ public:
 private slots:
     void on_comboBox_currentIndexChanged(int index);
 
+    void on_tableWidget_cellClicked(int row);
+
 public slots:
     void HandleMessage(DataPackage data);
 
@@ -33,6 +35,7 @@ private:
     pcap_t *pointer; //打开设备的描述符
     QVector<DataPackage> pData;
     int countNumber;
+    int numberRow;
     char errbuf[PCAP_ERRBUF_SIZE];  //存放错误信息
 };
 #endif // MAINWINDOW_H

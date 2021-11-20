@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     statusBar()->showMessage("welcome to fish");
     countNumber = 0;
+    numberRow = -1;
 
 
     ui->toolBar->addAction(ui->actionRun);
@@ -169,3 +170,24 @@ void MainWindow::HandleMessage(DataPackage data){
     countNumber++;
 
 }
+
+void MainWindow::on_tableWidget_cellClicked(int row)
+{
+    if(row == numberRow || numberRow < 0){
+        return;
+    }
+    ui->treeWidget->clear();
+    numberRow = row;
+    if(numberRow < 0 || numberRow > countNumber);
+        return;
+    QString desMac = pData[numberRow].getDestination();
+    QString srcMac = pData[numberRow].getSource();
+    QString type = pData[numberRow].getMacType();
+    QString tree = "Ethernet,src:" + srcMac + "Destination:" + desMac;
+    QTreeWidgetItem *item = new QTreeWidgetItem(QStringList() << tree);
+    ui->treeWidget->addTopLevelItem(item);
+    item->addChild(new QTreeWidgetItem(QStringList() << ""));
+
+
+}
+
