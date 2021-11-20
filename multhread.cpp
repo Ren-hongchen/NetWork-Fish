@@ -61,7 +61,7 @@ int multhread::ethernetPackageHandle(const u_char *pkt_content, QString &info){
             int res = ipPackageHandle(pkt_content,ipPackage);
             switch(res) {
             case 1: { //icmp
-                info = "ICMP";
+                info = icmpPackageHandle(pkt_content);
                 return 2;
             }
             case 6: { //tcp
@@ -140,6 +140,7 @@ int multhread::udpPackageHandle(const u_char *pkt_content, QString &info){
     u_short src = ntohs(udp->src_port);
 
     if(des == 53 || src == 53){
+        info = dnsPackageHandle(pkt_content);
         return 5;
     }
     else{
@@ -206,3 +207,56 @@ QString multhread::byteToString(u_char *str, int size){
     }
     return res;
 }
+
+QString multhread::dnsPackageHandle(const u_char *pkt_content){
+    DNS_HEADER *dns;
+    dns = (DNS_HEADER*)(pkt_content + 14 + 20 + 8);
+    u_short identification = ntohs(dns->identification);
+    u_short type = dns->flag;
+    QString info = "";
+    if((type & 0xf800) == 0x0000){
+        info = "Standard query";
+    }else if((type & 0xf800) == 0x8000){
+        info = "Standard query Response";
+    }
+    QString name = "";
+    char *domain = (char*)(pkt_content + 14 + 20 + 8 + 12);
+    while(*domain != 0x00){
+        if(domain && (*domain)<=64){
+            int length = *domain;
+            domain++;
+            for(int i = 0;i<length; i++){
+                name += (*domain);
+                domain++;
+            }
+            name += ".";
+        }else break;
+    }
+    if(name != "")
+        name = name.left(name.length() - 1);
+    return info + " 0x" + QString::number(identification,16) + " " + name;
+}
+
+QString multhread::icmpPackageHandle(const u_char *pkt_content){
+    ICMP_HEADER *icmp;
+    icmp = (ICMP_HEADER*)(pkt_content + 14 + 20);
+    u_char type = icmp->type;
+    u_char code = icmp->code;
+    QString res = "";
+    switch (type) {
+    case 0:{
+        if(!code)
+            res = "Echo Response(ping)";
+        break;
+    }
+        //......
+    case 8:{
+        if(!code)
+            res = "Echo Request(ping)";
+        break;
+    }
+    default:break;
+}
+    return res;
+}
+

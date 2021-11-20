@@ -64,4 +64,12 @@ typedef struct icmp_header{
     u_short sequence;
 } ICMP_HEADER;
 
+typedef struct dns_header{
+    u_short identification;
+    u_short flag;
+    u_short question;
+    u_short answer;
+    u_short authority;
+    u_short additional;
+} DNS_HEADER;
 #endif // FORMAT_H

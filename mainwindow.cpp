@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->setShowGrid(false);
     ui->tableWidget->verticalHeader()->setVisible(false);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-
+    ui->treeWidget->setHeaderHidden(true);
 
 
     showNetworkCard();
@@ -88,6 +88,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    int dataSize = pData.size();
+    for(int i = 0;i <dataSize; i++) {
+        free((char*)(this->pData[i].pkt_content));
+        this->pData[i].pkt_content = nullptr;
+    }
+    QVector<DataPackage>().swap(pData);
     delete ui;
 }
 
@@ -173,12 +179,12 @@ void MainWindow::HandleMessage(DataPackage data){
 
 void MainWindow::on_tableWidget_cellClicked(int row)
 {
-    if(row == numberRow || numberRow < 0){
+    if(row == numberRow || row < 0){
         return;
     }
     ui->treeWidget->clear();
     numberRow = row;
-    if(numberRow < 0 || numberRow > countNumber);
+    if(numberRow < 0 || numberRow > countNumber)
         return;
     QString desMac = pData[numberRow].getDestination();
     QString srcMac = pData[numberRow].getSource();
@@ -186,7 +192,10 @@ void MainWindow::on_tableWidget_cellClicked(int row)
     QString tree = "Ethernet,src:" + srcMac + "Destination:" + desMac;
     QTreeWidgetItem *item = new QTreeWidgetItem(QStringList() << tree);
     ui->treeWidget->addTopLevelItem(item);
-    item->addChild(new QTreeWidgetItem(QStringList() << ""));
+    item->addChild(new QTreeWidgetItem(QStringList() << "Destination:" + desMac));
+    item->addChild(new QTreeWidgetItem(QStringList() << "Source:" + srcMac));
+    item->addChild(new QTreeWidgetItem(QStringList() << "Type:" + type));
+
 
 
 }
